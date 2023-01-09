@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React  from 'react';
 import Notification from 'components/Notification';
 import Input from 'components/Input';
 import css from './Contacts.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter, getFilter } from 'redux/filtersSlice';
 import PropTypes from 'prop-types';
 
 function Contacts({ contacts, onClickDelete }) {
-  const [filter, setFilter] = useState('');
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
   const imputChange = e => {
-    setFilter(e.target.value);
+    dispatch(setFilter(e.target.value));
   };
 
-  const getFilter = contacts.filter(onFilter => onFilter.name.includes(filter));
+  const getFilters = contacts.filter(onFilter => onFilter.name.includes(filter));
   return (
     <div>
       <Input
@@ -22,11 +25,11 @@ function Contacts({ contacts, onClickDelete }) {
         name="filter"
       />
 
-      {!getFilter.length ? (
+      {!getFilters.length ? (
         <Notification message="Contact list is empty !" />
       ) : (
         <ul className={css.contactsItem}>
-          {getFilter.map(({ id, name, number }) => (
+          {getFilters.map(({ id, name, number }) => (
             <li key={id} className={css.contactsList}>
               <span className={css.contactsName}>Name: {name}</span>
               <span className={css.contactsNumber}>Tel: {number}</span>

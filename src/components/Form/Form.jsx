@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addContacts} from 'redux/contactsSlice';
 import css from './Form.module.css';
 import PropTypes from 'prop-types';
 
 function Form({ onSubmit }) {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNamber] = useState('');
 
@@ -23,6 +26,8 @@ function Form({ onSubmit }) {
   const hendleSubmit = e => {
     e.preventDefault();
     onSubmit({ name, number });
+
+    dispatch(addContacts(name, number));
 
     setName('');
     setNamber('');
