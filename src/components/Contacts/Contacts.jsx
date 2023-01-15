@@ -5,7 +5,7 @@ import css from './Contacts.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFilter, setFilter } from 'redux/filterSlice';
 import { deleteContacts, getContacts } from 'redux/contactsSlice';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 export const Contacts = () => {
   const filter = useSelector(getFilter);
@@ -27,9 +27,9 @@ export const Contacts = () => {
         value={filter}
         onChange={imputChange}
         type="text"
-        name="filter"
       />
-      {!ouerContact.length === 0 ? (
+      
+      {!ouerContact ? (
         <Notification message="Contact list is empty !" />
       ) : (
       <ul className={css.contactsItem}>
@@ -52,14 +52,14 @@ export const Contacts = () => {
   );
 }
 
-Contacts.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  onClickDelete: PropTypes.func.isRequired,
-};
+// Contacts.propTypes = {
+//   contacts: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       id: PropTypes.string.isRequired,
+//       name: PropTypes.string.isRequired,
+//       number: PropTypes.string.isRequired,
+//     })
+//   ).isRequired,
+//   onClickDelete: PropTypes.func.isRequired,
+// };
 
