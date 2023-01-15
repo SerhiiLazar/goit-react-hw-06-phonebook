@@ -1,13 +1,29 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addContacts} from 'redux/contactsSlice';
+import { useSelector } from 'react-redux';
+import { addContacts, getContacts} from 'redux/contactsSlice';
 import css from './Form.module.css';
 import PropTypes from 'prop-types';
 
-function Form({ onSubmit }) {
+export function Form() {
   const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
   const [name, setName] = useState('');
-  const [number, setNamber] = useState('');
+  const [number, setNumber] = useState('');
+  const nameContact = contacts.map(value => value.name);
+  
+  const hendleSubmit = e => {
+    e.preventDefault();
+
+    if(nameContact.includes(name)){
+      return alert(`${name} is already in contacts`)
+    }
+
+    dispatch(addContacts(name, number));
+
+    setName('');
+    setNumber('');
+  };
 
   const handleChenge = e => {
     const { name, value } = e.target;
@@ -16,21 +32,11 @@ function Form({ onSubmit }) {
         setName(value);
         break;
       case 'number':
-        setNamber(value);
+        setNumber(value);
         break;
       default:
         break;
     }
-  };
-
-  const hendleSubmit = e => {
-    e.preventDefault();
-    onSubmit({ name, number });
-
-    dispatch(addContacts(name, number));
-
-    setName('');
-    setNamber('');
   };
 
   return (
@@ -43,6 +49,7 @@ function Form({ onSubmit }) {
           name="name"
           onChange={handleChenge}
           value={name}
+          autoCapitalize="off"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
@@ -56,6 +63,7 @@ function Form({ onSubmit }) {
           name="number"
           onChange={handleChenge}
           value={number}
+          autoCapitalize="off"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
@@ -72,4 +80,4 @@ Form.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default Form;
+

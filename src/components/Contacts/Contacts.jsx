@@ -3,18 +3,23 @@ import Notification from 'components/Notification';
 import Input from 'components/Input';
 import css from './Contacts.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter, getFilter } from 'redux/filtersSlice';
+import { getFilter, setFilter } from 'redux/filterSlice';
+import { deleteContacts, getContacts } from 'redux/contactsSlice';
 import PropTypes from 'prop-types';
 
-function Contacts({ contacts, onClickDelete }) {
+export const Contacts = () => {
   const filter = useSelector(getFilter);
   const dispatch = useDispatch();
-
+  const contacts = useSelector(getContacts)
+  
+  const normalizeContact = filter.toLowerCase();
   const imputChange = e => {
     dispatch(setFilter(e.target.value));
   };
 
-  const getFilters = contacts.filter(onFilter => onFilter.name.includes(filter));
+  const visibleContact = contacts.filter(contact => contact.name.toLowerCase().includes(normalizeContact));
+  const ouerContact = contacts.length;
+
   return (
     <div>
       <Input
@@ -24,25 +29,24 @@ function Contacts({ contacts, onClickDelete }) {
         type="text"
         name="filter"
       />
-
-      {!getFilters.length ? (
+      {!ouerContact.length === 0 ? (
         <Notification message="Contact list is empty !" />
       ) : (
-        <ul className={css.contactsItem}>
-          {getFilters.map(({ id, name, number }) => (
-            <li key={id} className={css.contactsList}>
-              <span className={css.contactsName}>Name: {name}</span>
-              <span className={css.contactsNumber}>Tel: {number}</span>
-              <button
-                className={css.contactsBtn}
-                type="button"
-                onClick={() => onClickDelete(id)}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+      <ul className={css.contactsItem}>
+        {visibleContact.map(({ id, name, number }) => (
+          <li key={id} className={css.contactsList}>
+            <span className={css.contactsName}>Name: {name}</span>
+            <span className={css.contactsNumber}>Tel: {number}</span>
+            <button
+              className={css.contactsBtn}
+              type="button"
+              onClick={() => dispatch(deleteContacts(id))}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
       )}
     </div>
   );
@@ -59,4 +63,3 @@ Contacts.propTypes = {
   onClickDelete: PropTypes.func.isRequired,
 };
 
-export default Contacts;
